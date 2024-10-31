@@ -5,7 +5,7 @@
 
 bool reduceFunc(AtRawEvent *evt);
 
-void run_sim_fit_slurm(int runNum, int numThreads, bool saveRawEvent)
+void slurm_fit_sim(int runNum, int numThreads, bool saveRawEvent)
 {
    auto verbSpec =
       fair::VerbositySpec::Make(fair::VerbositySpec::Info::severity, fair::VerbositySpec::Info::file_line_function);

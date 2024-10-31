@@ -3,14 +3,14 @@
 
 bool reduceFunc(AtRawEvent *evt);
 
-void run_sim_fiss_slurm(int runNum, int numEvents)
+void slurm_sim_fiss(int runNum, int numEvents)
 {
 
    delete gRandom;
    gRandom = new TRandom3;
    gRandom->SetSeed(0);
 
-   //************ Things to change ************//
+   //************ Things to change ************/
    int Zcn = 83 + 2;  // Number of protons in the compound nucleus
    int Acn = 200 + 4; // Number of nucleons in the compound nucleus
    int Zmin = 26;     // Minimum Z to simulate for the fission fragments
