@@ -2,6 +2,8 @@
 #ifndef AtTPC20MGDECAY_pag_H
 #define AtTPC20MGDECAY_pag_H
 
+#include "AtReactionGenerator.h"
+
 #include <Rtypes.h> // for Double32_t, Bool_t, THashConsistencyHolder
 
 #include "FairGenerator.h"
@@ -10,7 +12,7 @@ class TClass;
 class TMemberInspector;
 class FairPrimaryGenerator;
 
-class AtTPC20MgDecay_pag : public FairGenerator {
+class AtTPC20MgDecay_pag : public AtReactionGenerator {
 
 public:
    /** Default constructor **/
@@ -20,7 +22,7 @@ public:
    virtual ~AtTPC20MgDecay_pag() = default;
 
    /** Initializer **/
-   virtual Bool_t Init();
+   virtual Bool_t Init() override;
 
    void SetXYZ(Double32_t x = 0, Double32_t y = 0, Double32_t z = 0)
    {
@@ -41,7 +43,7 @@ public:
       fBoxVtxIsSet = kTRUE;
    }
 
-   virtual Bool_t ReadEvent(FairPrimaryGenerator *primGen);
+   virtual bool GenerateReaction(FairPrimaryGenerator *primGen) override;
 
    void ShowOnlyAlphaProtonBranch() { fOnlyAPBranch = kTRUE; };
    void SetNuclearDecayChain() { fNuclearDecayChainIsSet = kTRUE; };
@@ -57,7 +59,7 @@ private:
    Int_t fParticlesDefinedInNuclearDecay;
    Double32_t fParticleEnergies[3] = {0, 0, 0};
    Double32_t fParticleBranchingRatios[3] = {0, 0, 0};
-   ClassDef(AtTPC20MgDecay_pag, 1)
+   ClassDefOverride(AtTPC20MgDecay_pag, 2)
 };
 
 #endif

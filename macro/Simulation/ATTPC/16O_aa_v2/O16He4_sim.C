@@ -1,6 +1,9 @@
+#include <FairLogger.h>
+
 void O16He4_sim(Int_t nEvents = 1000, TString mcEngine = "TGeant4")
 {
-
+   // fair::Logger::SetConsoleSeverity("debug");
+   // fair::Logger::SetVerbosity("veryhigh");
    TString dir = getenv("VMCWORKDIR");
 
    // Output file name
@@ -182,7 +185,7 @@ void O16He4_sim(Int_t nEvents = 1000, TString mcEngine = "TGeant4")
 
    AtTPCIonDecay *decay =
       new AtTPCIonDecay(&zDecay, &aDecay, &qDecay, &massDecay, zB, aB, massDecayB, massTarget, exEnergy, &SepEne);
-   decay->SetSequentialDecay(kTRUE);
+   decay->SetSequentialDecay(false);
    primGen->AddGenerator(decay);
 
    run->SetGenerator(primGen);

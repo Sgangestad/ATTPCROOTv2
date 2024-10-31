@@ -3,6 +3,8 @@
 # https://github.com/dennisklein/FairRoot/blob/modernize_cmake_phase2
 # Adam Anthony 3/25/2022
 
+
+
 macro(set_attpcroot_defaults)
 
   set(CMAKE_CXX_STANDARD ${PROJECT_MINIMUM_CXX_STANDARD})
@@ -106,9 +108,13 @@ macro(set_attpcroot_defaults)
 	set(clang-tidy_path_and_args
 	  ${clang-tidy_path}
 	  #--fix
-	  --extra-arg=-nostdinc++
 	  --extra-arg=-Wno-deprecated-declarations
 	  )
+    
+    if(${CMAKE_CXX_COMPILER_VERSION} VERSION_LESS 11.0.0)
+      message(STATUS "Using clang-tidy with g++ before 11.0.0, adding -nostdinc++ to extra args")
+      set(clang-tidy_path_and_args ${clang-tidy_path_and_args} --extra-arg=-nostdinc++)
+    endif()
 	message(STATUS "Setting clang tidy to: ${clang-tidy_path_and_args}") 
 	set(CMAKE_CXX_CLANG_TIDY ${clang-tidy_path_and_args})
 
@@ -120,7 +126,10 @@ macro(set_attpcroot_defaults)
 
   endif(RUN_STATIC_ANALYSIS)
 
-  
+  if(NOT DEFINED BUILD_TESTS)
+    set(BUILD_TESTS ON)
+endif()
+
 endmacro(set_attpcroot_defaults)
 
 function(join VALUES GLUE OUTPUT)

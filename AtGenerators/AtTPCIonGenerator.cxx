@@ -138,7 +138,8 @@ void AtTPCIonGenerator::SetVertexCoordinates()
 
 Bool_t AtTPCIonGenerator::ReadEvent(FairPrimaryGenerator *primGen)
 {
-
+   LOG(info) << cGREEN << "AtTPCIonGenerator ReadEvent"
+             << (AtVertexPropagator::Instance()->IsBeamEvent() ? " Beam Event " : " Reaction Event ") << cNORMAL;
    // if ( ! fIon ) {
    //   cout << "-W- FairIonGenerator: No ion defined! " << endl;
    //   return kFALSE;
@@ -153,20 +154,18 @@ Bool_t AtTPCIonGenerator::ReadEvent(FairPrimaryGenerator *primGen)
    int pdgType = thisPart->PdgCode();
    SetVertexCoordinates();
 
-   AtVertexPropagator::Instance()->IncBeamEvtCnt();
-
-   if (AtVertexPropagator::Instance()->GetBeamEvtCnt() % 2 != 0) {
+   if (AtVertexPropagator::Instance()->IsBeamEvent()) {
       if (fDoReact) {
          Double_t Er = gRandom->Uniform(0., fMaxEnLoss);
          AtVertexPropagator::Instance()->SetRndELoss(Er);
-         // std::cout << cGREEN << " Random Energy AtTPCIonGenerator : " << Er << cNORMAL << std::endl;
+         LOG(info) << cGREEN << " Random Energy AtTPCIonGenerator : " << Er << cNORMAL << std::endl;
       } else
          AtVertexPropagator::Instance()->SetRndELoss(std::numeric_limits<double>::max());
    }
 
    // We only want to add a beam track if it is a beam event or it is a reaction event and we are not doing a reaction
-   if (AtVertexPropagator::Instance()->GetBeamEvtCnt() % 2 != 0 ||
-       (AtVertexPropagator::Instance()->GetBeamEvtCnt() % 2 == 0 && !fDoReact))
+   if (AtVertexPropagator::Instance()->IsBeamEvent() ||
+       (AtVertexPropagator::Instance()->IsReactionEvent() && !fDoReact))
       for (Int_t i = 0; i < fMult; i++)
          primGen->AddTrack(pdgType, fPx, fPy, fPz, fVx, fVy, fVz);
 

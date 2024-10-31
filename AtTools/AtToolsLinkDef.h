@@ -11,6 +11,7 @@
 #pragma link C++ namespace ElectronicResponse;
 #pragma link C++ namespace tk;
 #pragma link C++ namespace AtTools::Kinematics;
+#pragma link C++ namespace AtTools::DataCleaning;
 
 #pragma link C++ class AtTools::AtELossManager + ;
 #pragma link C++ class AtTools::AtParsers + ;
@@ -67,5 +68,8 @@
 #pragma link C++ function AtTools::Kinematics::GetRelMom;
 #pragma link C++ function AtTools::Kinematics::AtoE;
 #pragma link C++ function AtTools::Kinematics::EtoA;
+
+#pragma link C++ class AtTools::DataCleaning::AtkNN + ;
+#pragma link C++ class AtTools::DataCleaning::AtDataCleaner + ;
 
 #endif

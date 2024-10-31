@@ -173,15 +173,16 @@ void O16He4_sim_C12alpha(Int_t nEvents = 1000, TString mcEngine = "TGeant4")
    massTarget = 0.0;
    exEnergy = 0.0; // NB: Set to zero for sequential decay
 
+   zDecay.at(0).push_back(6);
+   aDecay.at(0).push_back(12);
+   qDecay.at(0).push_back(0);
+   massDecay.at(0).push_back(12.0);
+
    zDecay.at(0).push_back(2);
    aDecay.at(0).push_back(4);
    qDecay.at(0).push_back(0);
    massDecay.at(0).push_back(4.00260325415);
 
-   zDecay.at(0).push_back(6);
-   aDecay.at(0).push_back(12);
-   qDecay.at(0).push_back(0);
-   massDecay.at(0).push_back(12.0);
 
    AtTPCIonDecay *decay =
       new AtTPCIonDecay(&zDecay, &aDecay, &qDecay, &massDecay, zB, aB, massDecayB, massTarget, exEnergy, &SepEne);

@@ -17,6 +17,15 @@ set(SRCS
   AtMCPoint.cxx
 )
 
+set(TEST_SRCS
+  AtVertexPropagatorTest.cxx
+)
+
+attpcroot_generate_tests(${LIBRARY_NAME}Tests
+  SRCS ${TEST_SRCS}
+  DEPS ${LIBRARY_NAME}
+  )
+
 generate_target_and_root_library(${LIBRARY_NAME}
   LINKDEF ${LINKDEF}
   SRCS ${SRCS}

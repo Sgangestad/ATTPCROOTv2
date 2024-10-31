@@ -264,7 +264,7 @@ std::vector<Double_t> AtTPC_Background::BreakUp(std::vector<Double_t> *Pdeuteron
 }
 
 // -----   Public method ReadEvent   --------------------------------------
-Bool_t AtTPC_Background::ReadEvent(FairPrimaryGenerator *primGen)
+bool AtTPC_Background::GenerateReaction(FairPrimaryGenerator *primGen)
 {
 
    fIsDecay = kFALSE;
@@ -441,7 +441,7 @@ fPz.at(3) = (Prec*cos(angrec) )/1000.0; // To GeV for FairRoot
       fVy = random_r * sin(random_phi);
       fVz = 100.0 * (gRandom->Uniform()); // cm
 
-      if (i > 1 && AtVertexPropagator::Instance()->GetDecayEvtCnt() && pdgType == 2212) {
+      if (i > 1 && pdgType == 2212) {
          // TODO: Dirty way to propagate only the products (0 and 1 are beam and target respectively)
 
          // std::cout << "-I- FairIonGenerator: Generating ions of type "
@@ -452,9 +452,6 @@ fPz.at(3) = (Prec*cos(angrec) )/1000.0; // To GeV for FairRoot
          primGen->AddTrack(pdgType, fPx.at(i), fPy.at(i), fPz.at(i), fVx, fVy, fVz);
       }
    }
-
-   AtVertexPropagator::Instance()
-      ->IncDecayEvtCnt(); // TODO: Okay someone should put a more suitable name but we are on a hurry...
 
    return kTRUE;
 }

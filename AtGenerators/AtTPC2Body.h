@@ -8,13 +8,14 @@
 #ifndef AtTPC2Body_H
 #define AtTPC2Body_H
 
+#include "AtReactionGenerator.h"
+
 #include <FairGenerator.h>
 
 #include <Rtypes.h>
 #include <TString.h>
 
 #include <vector>
-
 class FairPrimaryGenerator;
 class FairIon;
 class FairParticle;
@@ -22,7 +23,7 @@ class TBuffer;
 class TClass;
 class TMemberInspector;
 
-class AtTPC2Body : public FairGenerator {
+class AtTPC2Body : public AtReactionGenerator {
 
 public:
    /** Default constructor **/
@@ -39,11 +40,10 @@ public:
 
    void SetFixedTargetPosition(double vx, double vy, double vz);
    void SetFixedBeamMomentum(double px, double py, double pz);
-   inline void SetSequentialDecay(Bool_t val) { kIsDecay = val; }
 
-   inline Bool_t GetIsDecay() { return kIsDecay; }
+   inline Bool_t GetIsDecay() { return !kIsFinalGen; }
 
-   virtual Bool_t ReadEvent(FairPrimaryGenerator *primGen);
+   virtual bool GenerateReaction(FairPrimaryGenerator *primGen) override;
 
    /** Destructor **/
    virtual ~AtTPC2Body() = default;
@@ -73,16 +73,14 @@ private:
    Double_t fPzBeam_buff{};
    Double_t fThetaCmsMax{};
    Double_t fThetaCmsMin{};
-   Bool_t kIsDecay{false};
    // Double_t fBeamMass;
    // Double_t fTargetMass;
    Bool_t fNoSolution{};
-   std::vector<Double_t> fWm; // Total mass
+   std::vector<Double_t> fWm;      // Total mass
+   Bool_t kIsFixedTarget{false};   //
+   Bool_t fIsFixedMomentum{false}; //
 
-   Bool_t fIsFixedTargetPos{}; //
-   Bool_t fIsFixedMomentum{};  //
-
-   ClassDef(AtTPC2Body, 3)
+   ClassDefOverride(AtTPC2Body, 4)
 };
 
 #endif

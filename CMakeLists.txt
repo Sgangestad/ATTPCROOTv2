@@ -13,16 +13,18 @@ include(FairSoftCheckCompiler)
 attpcroot_sanity_checks()
 check_compiler()
 
+include(FetchContent)
 include(ATTPCRootUtils)
 include(ATTPCRootFindPackage2)
 include(ROOTTargetMacros)
 include(WriteConfigFile)
-include(CTest)
 include(GNUInstallDirs)
 include(PrintSummary)
-include(FetchContent)
+
 
 set_attpcroot_defaults()
+
+include(ATTPCRootCTest) # Must be included after setting defaults
 
 find_package2(PUBLIC FairRoot REQUIRED)
 #set(ROOT_NO_FIND_PACKAGE_CONFIG_FILE TRUE)
@@ -120,7 +122,7 @@ find_package2(PUBLIC CUDA)
 find_package2(PUBLIC HiRAEVT CONFIG)
 find_package2(PUBLIC GENFIT2)
 
-#find_package2(PUBLIC Eigen3 3.3 REQUIRED NO_MODULE)
+find_package2(PUBLIC Eigen3 3.3 NO_MODULE)
 
 if(TARGET Eigen3::Eigen)
   message("Found Eigen, grabbing OpenKF")
@@ -138,7 +140,6 @@ if(TARGET Eigen3::Eigen)
     
   #endif()
 endif()
-
 
 if (OPENMP_CXX_FOUND)
  # MESSAGE("${Green} OpenMP Support Found ${OpenMP_CXX_SPEC_DATE} ${ColourReset}")
@@ -158,26 +159,18 @@ add_subdirectory (AtSimulationData)
 add_subdirectory (AtData)
 add_subdirectory (AtUnpack)
 add_subdirectory (AtGenerators)
-add_subdirectory (AtTpc)
-add_subdirectory (AtSiArray)
+add_subdirectory (AtDetectors)
 
-add_subdirectory (AtPassive)
-add_subdirectory (AtField)
 add_subdirectory (AtMap)
 add_subdirectory (AtReconstruction)
 add_subdirectory (AtParameter)
 add_subdirectory (AtDigitization)
 add_subdirectory (AtS800)
-add_subdirectory (AtApollo)
-add_subdirectory (AtSeGA)
-add_subdirectory (AtDeGAi)
 add_subdirectory (AtAnalysis)
 add_subdirectory (AtTools)
 add_subdirectory (AtEventDisplay)
 
-
 # Generate config file for build
-
 fairroot_generate_config_sh(${CMAKE_BINARY_DIR}/config.sh
   BUILD
   PATH ${ROOT_BINARY_DIR}

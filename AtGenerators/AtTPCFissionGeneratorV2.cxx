@@ -115,7 +115,7 @@ AtTPCFissionGeneratorV2::AtTPCFissionGeneratorV2(const char *name, TString simfi
 }
 
 // -----   Public method ReadEvent   --------------------------------------
-Bool_t AtTPCFissionGeneratorV2::ReadEvent(FairPrimaryGenerator *primGen)
+Bool_t AtTPCFissionGeneratorV2::GenerateReaction(FairPrimaryGenerator *primGen)
 {
 
    fVx = 0., fVy = 0., fVz = 0.;
@@ -185,8 +185,6 @@ Bool_t AtTPCFissionGeneratorV2::ReadEvent(FairPrimaryGenerator *primGen)
       }
    }
 
-   AtVertexPropagator::Instance()
-      ->IncDecayEvtCnt(); // TODO: Okay someone should put a more suitable name but we are on a hurry...
    std::cout << cRED << " Fission event : " << event << cNORMAL << std::endl;
    event++;
 

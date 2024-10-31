@@ -202,7 +202,7 @@ Double_t AtTPC_d2He::omega(Double_t x, Double_t y, Double_t z)
 }
 
 // -----   Public method ReadEvent   --------------------------------------
-Bool_t AtTPC_d2He::ReadEvent(FairPrimaryGenerator *primGen)
+Bool_t AtTPC_d2He::GenerateReaction(FairPrimaryGenerator *primGen)
 {
 
    std::vector<Double_t> Ang; // Lab Angle of the products
@@ -581,8 +581,7 @@ Bool_t AtTPC_d2He::ReadEvent(FairPrimaryGenerator *primGen)
       // TVector3 d2HeVtx(fVx,fVy,fVz);
       // AtVertexPropagator::Instance()->Setd2HeVtx(d2HeVtx);
 
-      if (i > 1 && i != 3 && AtVertexPropagator::Instance()->GetDecayEvtCnt() && pdgType != 1000500500 &&
-          fPType.at(i) == "Ion") {
+      if (i > 1 && i != 3 && pdgType != 1000500500 && fPType.at(i) == "Ion") {
          // TODO: Dirty way to propagate only the products (0 and 1 are beam and target respectively)
          // i=3 is excluded because  corresponds to 2He
          /*			            std::cout << "-I- FairIonGenerator: Generating ions of type "
@@ -593,8 +592,7 @@ Bool_t AtTPC_d2He::ReadEvent(FairPrimaryGenerator *primGen)
 
          primGen->AddTrack(pdgType, fPx.at(i), fPy.at(i), fPz.at(i), fVx, fVy, fVz);
 
-      } else if (i > 1 && i != 3 && AtVertexPropagator::Instance()->GetDecayEvtCnt() && pdgType == 2212 &&
-                 fPType.at(i) == "Proton") {
+      } else if (i > 1 && i != 3 && pdgType == 2212 && fPType.at(i) == "Proton") {
 
          /*  			      std::cout << "-I- FairIonGenerator: Generating ions of type "
            << fParticle.at(i)->GetName() << " (PDG code " << pdgType << ")" << std::endl;
@@ -605,8 +603,7 @@ Bool_t AtTPC_d2He::ReadEvent(FairPrimaryGenerator *primGen)
          // primGen->AddTrack(pdgType, fPx.at(i), fPy.at(i), fPz.at(i), fVx, fVy, fVz);
          primGen->AddTrack(pdgType, fPx.at(i), fPy.at(i), fPz.at(i), fVx, fVy, fVz);
 
-      } else if (i > 1 && i != 3 && AtVertexPropagator::Instance()->GetDecayEvtCnt() && pdgType == 2112 &&
-                 fPType.at(i) == "Neutron") {
+      } else if (i > 1 && i != 3 && pdgType == 2112 && fPType.at(i) == "Neutron") {
 
          /*         std::cout << "-I- FairIonGenerator: Generating ions of type "
          << fParticle.at(i)->GetName() << " (PDG code " << pdgType << ")" << std::endl;
@@ -618,8 +615,6 @@ Bool_t AtTPC_d2He::ReadEvent(FairPrimaryGenerator *primGen)
       }
    }
 
-   AtVertexPropagator::Instance()
-      ->IncDecayEvtCnt(); // TODO: Okay someone should put a more suitable name but we are on a hurry...
    AtVertexPropagator::Instance()->Getd2HeEvt();
 
    return kTRUE;

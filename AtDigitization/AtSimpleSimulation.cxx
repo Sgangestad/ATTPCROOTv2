@@ -21,6 +21,16 @@
 thread_local TClonesArray AtSimpleSimulation::fMCPoints("AtMCPoint");
 thread_local int AtSimpleSimulation::fTrackID = 0;
 
+int AtSimpleSimulation::GetNumPoints()
+{
+   return fMCPoints.GetEntries();
+}
+
+TClonesArray &AtSimpleSimulation::GetPointsArray()
+{
+   return fMCPoints;
+}
+
 using SpaceChargeModel = std::shared_ptr<AtSpaceChargeModel>;
 using ModelPtr = std::shared_ptr<AtTools::AtELossModel>;
 using XYZPoint = ROOT::Math::XYZPoint;
@@ -102,8 +112,12 @@ AtSimpleSimulation::SimulateParticle(int Z, int A, const XYZPoint &iniPos, const
    auto modelIt = fModels.find({A, Z});
    if (modelIt == fModels.end())
       throw std::invalid_argument("Missing energy loss model for Z:" + std::to_string(Z) + " A:" + std::to_string(A));
-   if (!IsInVolume("drift_volume", iniPos))
-      throw std::invalid_argument("Position of particle is not in active volume but is in " + GetVolumeName(iniPos));
+   if (!IsInVolume("drift_volume", iniPos)) {
+      LOG(error) << "Position of particle " << Z << ", " << A << " is not in active volume but is in "
+                 << GetVolumeName(iniPos);
+      return {iniPos, iniMom};
+      // throw std::invalid_argument("Position of particle is not in active volume but is in " + GetVolumeName(iniPos));
+   }
 
    return SimulateParticle(modelIt->second, iniPos, iniMom, func);
 }
@@ -140,7 +154,7 @@ AtSimpleSimulation::SimulateParticle(ModelPtr model, const XYZPoint &iniPos, con
       double p = sqrt(E * E - mom.M2());
       mom.SetPxPyPzE(dir.X() * p, dir.Y() * p, dir.Z() * p, E);
 
-      LOG(debug) << mom << " " << mom.M() << " " << iniMom.M();
+      LOG(debug) << pos << " " << eLoss << " " << iniMom.E() - iniMom.M();
 
       pos += dir * fDistStep;
       length += fDistStep;
@@ -152,6 +166,7 @@ AtSimpleSimulation::SimulateParticle(ModelPtr model, const XYZPoint &iniPos, con
 
 void AtSimpleSimulation::NewEvent()
 {
+   LOG(info) << "Starting new event";
    fMCPoints.Clear();
    fTrackID = 0;
 }

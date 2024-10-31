@@ -1,8 +1,9 @@
 #ifndef AtVertexPropagator_H
 #define AtVertexPropagator_H
 
+#include <FairLogger.h>
+
 #include <Rtypes.h>
-#include <TObject.h>
 #include <TVector3.h>
 
 #include <map>
@@ -12,14 +13,12 @@ class TBuffer;
 class TClass;
 class TMemberInspector;
 
-class AtVertexPropagator : public TObject {
+class AtVertexPropagator {
 
 private:
    static std::unique_ptr<AtVertexPropagator> fInstance;
 
-   Int_t fGlobalEvtCnt;
-   Int_t fBeamEvtCnt;
-   Int_t fDecayEvtCnt;
+   Bool_t kIsBeamEvent{true};
 
    std::map<int, double> fTrackEn;
    std::map<int, double> fTrackAngle;
@@ -52,8 +51,10 @@ private:
    Int_t fAiso;
    Int_t fZiso;
    TVector3 fScatP;
+   TVector3 fRecP;
    TVector3 fd2HeVtx;
    Double_t fExEjectile;
+   Double_t fExRecoil;
 
 protected:
    AtVertexPropagator();
@@ -62,6 +63,7 @@ public:
    virtual ~AtVertexPropagator() = default;
 
    static AtVertexPropagator *Instance();
+   void ResetForTesting() { fInstance = nullptr; }
 
    void SetVertex(Double_t vx, Double_t vy, Double_t vz, Double_t invx, Double_t invy, Double_t invz, Double_t px,
                   Double_t py, Double_t pz, Double_t E);
@@ -70,16 +72,6 @@ public:
    void SetTrackEnergy(int trackID, double energy);
    void SetTrackAngle(int trackID, double angle);
 
-   /*   void SetRecoilE(Double_t val);
-      void SetRecoilA(Double_t val);
-      void SetScatterE(Double_t val);
-      void SetScatterA(Double_t val);
-      void SetBURes1E(Double_t val); // Recoil(Scatt) breaks up. Residual 1
-      void SetBURes1A(Double_t val);
-      void SetBURes2E(Double_t val); // Recoil(Scatt) breaks up. Residual 2
-      void SetBURes2A(Double_t val);
-   */
-
    void SetRndELoss(Double_t eloss);
    void SetBeamNomE(Double_t ener);
    void ResetVertex();
@@ -87,12 +79,14 @@ public:
    void SetAtomicNum(Int_t anum);
    void SetScatterP(TVector3 val);
    void SetScatterEx(Double_t val);
+   void SetRecoilP(TVector3 val);
+   void SetRecoilEx(Double_t val);
    void Setd2HeVtx(TVector3 val);
    void Setd2HeVtx(Double_t x0, Double_t y0, Double_t theta, Double_t phi);
+   void SetIsBeamEvent(bool val) { kIsBeamEvent = val; };
+   bool IsBeamEvent() { return kIsBeamEvent; };
+   bool IsReactionEvent() { return !kIsBeamEvent; };
 
-   Int_t GetGlobalEvtCnt();
-   Int_t GetBeamEvtCnt();
-   Int_t GetDecayEvtCnt();
    Double_t GetBeamMass();
    Double_t GetVx();
    Double_t GetVy();
@@ -110,26 +104,20 @@ public:
    Double_t GetTrackAngle(int trackID);
    Double_t GetTrackEnergy(int trackID);
 
-   /*
-   Double_t GetRecoilE();
-   Double_t GetRecoilA();
-   Double_t GetScatterE();
-   Double_t GetScatterA();
-   Double_t GetBURes1E(); // Recoil(Scatt) breaks up. Residual 1
-   Double_t GetBURes1A();
-   Double_t GetBURes2E(); // Recoil(Scatt) breaks up. Residual 2
-   Double_t GetBURes2A();
-   */
-
    Int_t GetMassNum();
    Int_t GetAtomicNum();
    TVector3 GetScatterP();
    Double_t GetScatterEx();
+   TVector3 GetRecoilP();
+   Double_t GetRecoilEx();
    TVector3 Getd2HeVtx();
 
-   void IncGlobalEvtCnt();
-   void IncBeamEvtCnt();
-   void IncDecayEvtCnt();
+   /**
+    * Called after the last generator finished adding particles to the stack
+    * must be called *once* per event. It is up to the user to make sure their
+    * chain of generators is set up correctly.
+    * */
+   void EndEvent() { kIsBeamEvent = !kIsBeamEvent; }
 
    void SetValidKine(Bool_t val);
    Bool_t GetValidKine();

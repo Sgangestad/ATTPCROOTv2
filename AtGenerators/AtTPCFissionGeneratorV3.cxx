@@ -73,19 +73,12 @@ AtTPCFissionGeneratorV3::AtTPCFissionGeneratorV3(AtTPCFissionGeneratorV3 &rhs) {
 
 AtTPCFissionGeneratorV3::~AtTPCFissionGeneratorV3() = default;
 
-Bool_t AtTPCFissionGeneratorV3::ReadEvent(FairPrimaryGenerator *primeGen)
+Bool_t AtTPCFissionGeneratorV3::GenerateReaction(FairPrimaryGenerator *primeGen)
 {
    fPrimeGen = primeGen;
 
-   // If this is a beam-like event don't do anything
-   if (AtVertexPropagator::Instance()->GetDecayEvtCnt() % 2 == 0) {
-      LOG(debug) << "AtTPCFissionGeneratorV3: Skipping beam-like event";
-   } else {
-      LOG(debug) << "AtTPCFissionGeneratorV3: Runing reaction-like event";
-      generateEvent();
-   }
+   generateEvent();
 
-   AtVertexPropagator::Instance()->IncDecayEvtCnt();
    return true;
 }
 
@@ -98,7 +91,7 @@ void AtTPCFissionGeneratorV3::generateEvent()
       generateFragment(fDecayFrags->at(i), fA->at(i), fZ->at(i));
 
    LOG(debug) << "Wrote tracks for fission root event: " << fCurrEvent;
-   LOG(debug) << "Wrote tracks for MC event: " << AtVertexPropagator::Instance()->GetDecayEvtCnt();
+   // LOG(debug) << "Wrote tracks for MC event: " << AtVertexPropagator::Instance()->GetDecayEvtCnt();
    fCurrEvent++;
 }
 
